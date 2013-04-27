@@ -51,7 +51,7 @@ string ofxMidiIn::getPortName(unsigned int portNumber) {
 }
 
 // --------------------------------------------------------------------------------------
-bool ofxMidiIn::openPort(unsigned int portNumber) {	
+bool ofxMidiIn::openPort(unsigned int portNumber) {
 	// handle rtmidi exceptions
 	try {
 		closePort();
@@ -72,7 +72,7 @@ bool ofxMidiIn::openPort(unsigned int portNumber) {
 
 // --------------------------------------------------------------------------------------
 bool ofxMidiIn::openPort(string deviceName) {
-	
+
 	// iterate through MIDI ports, find requested device
 	int port = -1;
 	for(unsigned int i = 0; i < midiin.getPortCount(); ++i) {
@@ -82,13 +82,13 @@ bool ofxMidiIn::openPort(string deviceName) {
 			break;
 		}
 	}
-	
+
 	// bail if not found
 	if(port == -1) {
 		ofLog(OF_LOG_ERROR, "ofxMidiIn: port \"%s\" is not available", deviceName.c_str());
 		return false;
-	} 
-	
+	}
+
 	return openPort(port);
 }
 
@@ -170,16 +170,16 @@ void ofxMidiIn::setVerbose(bool verbose) {
 // --------------------------------------------------------------------------------------
 // TODO: replace cout with ofLogNotice, etc?
 void ofxMidiIn::manageNewMessage(double deltatime, vector<unsigned char> *message) {
-			
+
 	// parse message and fill event
 	ofxMidiMessage midiMessage(message);
-	
+
 	midiMessage.status = (MidiStatus) (message->at(0) & 0xF0);
 	midiMessage.channel = (int) (message->at(0) & 0x0F)+1;
 	midiMessage.deltatime = deltatime * 1000; // convert s to ms
 	midiMessage.portNum = portNum;
 	midiMessage.portName = portName;
-	
+
 	switch(midiMessage.status) {
 		case MIDI_NOTE_ON :
 		case MIDI_NOTE_OFF:
@@ -205,11 +205,11 @@ void ofxMidiIn::manageNewMessage(double deltatime, vector<unsigned char> *messag
 		default:
 			break;
 	}
-	
+
 	if(bVerbose) {
 		cout << midiMessage.toString() << endl;
 	}
-	
+
 	// send event to listeners
 	ofNotifyEvent(newMessageEvent, midiMessage, this);
 }
